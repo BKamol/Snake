@@ -1,8 +1,8 @@
-import random
 import sys
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal
-from PyQt5.QtGui import QPainter, QColor, QPen, QBrush
-from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QGraphicsView, QGraphicsScene, QMessageBox
+from PyQt5.QtGui import QPen, QBrush
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, \
+                            QGraphicsView, QGraphicsScene, QMessageBox
 from game_objects import Snake, Apple, Obstacle, GameObject
 
 
@@ -18,7 +18,6 @@ class Game(QMainWindow):
 
         self.statusbar = self.statusBar()
         self.board = Board(self)
-        
 
         self.setCentralWidget(self.board)
         self.setWindowTitle('Snake')
@@ -55,7 +54,6 @@ class Board(QGraphicsView):
         self.initBoard()
         self.initGame()
 
-
     def initBoard(self):
         self.scene = QGraphicsScene()
         self.setScene(self.scene)
@@ -79,7 +77,6 @@ class Board(QGraphicsView):
         self.obstacle_timer.start(self.ObstacleTimer)
         self.apple.add_random_item(avoid_object=self.snake)
         self.msg2statusbar.emit(f"Score: {self.snake.score}")
-
 
     def update_game(self):
         """
@@ -193,13 +190,11 @@ class Board(QGraphicsView):
         msg.setText(f"You have lost. Your score: {self.snake.score}.")
         msg.setIcon(QMessageBox.Information)
         msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()
+        msg.exec_()    
 
-    
 
 if __name__ == '__main__':
     app = QApplication([])
     snake_game = Game()
     snake_game.show()
     sys.exit(app.exec_())
-

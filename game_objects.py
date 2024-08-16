@@ -1,5 +1,6 @@
 import random
 
+
 class GameObject:
     """
     Все игровые объекты наследуются от этого класса.
@@ -20,19 +21,19 @@ class GameObject:
     def __init__(self):
         self._coordinates = []
         self._size = 0
-    
+
     @property
     def coordinates(self):
         return self._coordinates
-    
+
     @coordinates.setter
     def coordinates(self, new_coords):
         self._coordinates = new_coords
-    
+
     @property
     def size(self):
         return self._size
-    
+
     @size.setter
     def size(self, new_size):
         self._size = new_size
@@ -45,20 +46,20 @@ class GameObject:
         amount: int - количество добавляемых случайных координат
         """
         for _ in range(amount):
-            x = random.randint(1, self.BoardWidth - 1)
-            y = random.randint(1, self.BoardHeight - 1)
+            x = random.randint(2, self.BoardWidth - 2)
+            y = random.randint(2, self.BoardHeight - 2)
 
             if avoid_object is not None:
                 while [x, y] in avoid_object:
-                    x = random.randint(1, self.BoardWidth - 1)
-                    y = random.randint(1, self.BoardHeight - 1)
+                    x = random.randint(2, self.BoardWidth - 2)
+                    y = random.randint(2, self.BoardHeight - 2)
 
             self.size += 1
             self.coordinates.append([x, y])
 
     def __getitem__(self, index):
         return self.coordinates[index]
-    
+
     def __setitem__(self, index, value):
         self.coordinates[index] = value
 
@@ -83,8 +84,8 @@ class Snake(GameObject):
     def __init__(self):
         super().__init__()
         self.size = 3
-        x = random.randint(1, self.BoardWidth-1)
-        y = random.randint(1, self.BoardWidth-1)
+        x = random.randint(2, self.BoardWidth-2)
+        y = random.randint(2, self.BoardWidth-2)
         self.coordinates = [[x, y], [x, y+1], [x, y+1]]
         self._direction = "down"
         self.is_alive = True
@@ -96,7 +97,7 @@ class Snake(GameObject):
     @property
     def direction(self):
         return self._direction
-    
+
     @direction.setter
     def direction(self, new_direction):
         """
@@ -145,7 +146,7 @@ class Snake(GameObject):
 
     def get_head_coords(self):
         return self.coordinates[-1]
-    
+
     def check_collision(self, object, remove=False):
         """
         Проверяет столкновение змеи c object
@@ -155,11 +156,11 @@ class Snake(GameObject):
         """
         for pos in object:
             if pos in self.coordinates:
-                if remove: 
+                if remove:
                     object.coordinates.remove(pos)
                 return True
         return False
-    
+
     def check_self_collision(self):
         """
         Проверяет столкновение змеи с собой
@@ -168,4 +169,3 @@ class Snake(GameObject):
             if self.coordinates[i] == self.coordinates[-1]:
                 return True
         return False
-
