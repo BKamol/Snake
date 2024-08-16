@@ -40,7 +40,7 @@ class Board(QGraphicsView):
     """
     Игровое поле
     Атрибуты класса:
-    msg2statusbar: pyqtSignal - сигнал, отправляемый статус бару родителя, для отображения очков и состояния игры(пауза, поражение)
+    msg2statusbar: pyqtSignal - сигнал, отправляемый статус бару родителя
     GameTimer: int - период обновления игры
     ObstacleTiemr: int - период появления препятствия
     """
@@ -102,15 +102,17 @@ class Board(QGraphicsView):
         pen = QPen(Qt.black)
         brush = QBrush(color)
         for x, y in object:
-            self.scene.addRect(x*object.CellSize, y*object.CellSize, 
+            self.scene.addRect(x*object.CellSize, y*object.CellSize,
                                object.CellSize, object.CellSize, pen, brush)
 
     def check_collisions(self):
         """
-        Проверяет столкновение змеи и, при обнаружении, меняет состояние игры(больше очков или поражение)
+        Проверяет столкновение змеи и, при обнаружении, меняет состояние игры
         """
-        if self.snake.check_self_collision() or self.snake.check_collision(self.obstacle):
-            self.msg2statusbar.emit(f"Game Over. Your score: {self.snake.score}")
+        if self.snake.check_self_collision() or \
+           self.snake.check_collision(self.obstacle):
+            self.msg2statusbar.emit(f"Game Over.\
+                                     Your score: {self.snake.score}")
             self.show_popup()
             self.game_timer.stop()
             self.obstacle_timer.stop()
@@ -151,7 +153,8 @@ class Board(QGraphicsView):
 
     def pause(self):
         """
-        Ставит игру на паузу, если она запущена или запускает, если она на паузе
+        Ставит игру на паузу, если она запущена
+        Запускает игру, если она на паузе
         """
         if self.snake.is_alive:
             self.paused = not self.paused
@@ -190,7 +193,7 @@ class Board(QGraphicsView):
         msg.setText(f"You have lost. Your score: {self.snake.score}.")
         msg.setIcon(QMessageBox.Information)
         msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()    
+        msg.exec_()
 
 
 if __name__ == '__main__':

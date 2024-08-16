@@ -42,7 +42,7 @@ class GameObject:
         """
         Добавляет к объекту случайную пару координат.
         Параметры:
-        avoid_object: GameObject - новая пара не будет появляться на месте координат переданного объекта
+        avoid_object: GameObject - нова пара не будет пересекать объект
         amount: int - количество добавляемых случайных координат
         """
         for _ in range(amount):
@@ -78,15 +78,14 @@ class Obstacle(GameObject):
 class Snake(GameObject):
     """
     Класс для змеи.
-    При инициализации змея размера 3 клетки появляется в случайном месте и движется вниз.
     Голова змеи находится в конце списка.
     """
-    def __init__(self):
+    def __init__(self, initial_size=3, initial_direction="down"):
         super().__init__()
-        self.size = 3
+        self.size = initial_size
         x = random.randint(2, self.BoardWidth-2)
         y = random.randint(2, self.BoardWidth-2)
-        self.coordinates = [[x, y], [x, y+1], [x, y+1]]
+        self.coordinates = [[x, y+i] for i in range(initial_size)]
         self._direction = "down"
         self.is_alive = True
 
@@ -110,7 +109,7 @@ class Snake(GameObject):
         elif new_direction == 'up' and self._direction != 'down':
             self._direction = 'up'
         elif new_direction == 'down' and self._direction != 'up':
-            self._direction = 'down'    
+            self._direction = 'down'
 
     def move(self, grow=False):
         """
@@ -152,7 +151,7 @@ class Snake(GameObject):
         Проверяет столкновение змеи c object
         Параметры:
         object: GameObject - объект, проверяемый на столкновение
-        remove: bool - удалет клетку объекта object, которая столкнуласт со змеей при значении True
+        remove: bool - удалет клетку объекта object
         """
         for pos in object:
             if pos in self.coordinates:
