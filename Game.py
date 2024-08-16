@@ -13,11 +13,11 @@ class Game(QMainWindow):
     WIDTH = 800
     HEIGHT = 600
 
-    def __init__(self):
+    def __init__(self, snake_size=3, snake_direction="down"):
         super().__init__()
 
         self.statusbar = self.statusBar()
-        self.board = Board(self)
+        self.board = Board(self, snake_size, snake_direction)
 
         self.setCentralWidget(self.board)
         self.setWindowTitle('Snake')
@@ -48,11 +48,14 @@ class Board(QGraphicsView):
     GameTimer = 40
     ObstacleTimer = 10000
 
-    def __init__(self, parent):
+    def __init__(self, parent, snake_size, snake_direction):
         super().__init__(parent)
         self.msg2statusbar.connect(parent.statusbar.showMessage)
         self.initBoard()
-        self.initGame()
+
+        self.snake_size = snake_size
+        self.snake_direction = snake_direction
+        self.initGame(snake_size, snake_direction)
 
     def initBoard(self):
         self.scene = QGraphicsScene()
@@ -63,8 +66,8 @@ class Board(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-    def initGame(self):
-        self.snake = Snake()
+    def initGame(self, snake_size, snake_direction):
+        self.snake = Snake(snake_size, snake_direction)
         self.apple = Apple()
         self.obstacle = Obstacle()
         self.game_timer = QTimer()
@@ -149,7 +152,7 @@ class Board(QGraphicsView):
 
     def restart(self):
         """Рестарт игры"""
-        self.initGame()
+        self.initGame(self.snake_size, self.snake_direction)
 
     def pause(self):
         """
@@ -198,6 +201,6 @@ class Board(QGraphicsView):
 
 if __name__ == '__main__':
     app = QApplication([])
-    snake_game = Game()
+    snake_game = Game(snake_size=4, snake_direction="up")
     snake_game.show()
     sys.exit(app.exec_())

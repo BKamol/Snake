@@ -83,15 +83,26 @@ class Snake(GameObject):
     def __init__(self, initial_size=3, initial_direction="down"):
         super().__init__()
         self.size = initial_size
+        self._direction = initial_direction
+        self.is_alive = True
+        self._score = 0
         x = random.randint(2, self.BoardWidth-2)
         y = random.randint(2, self.BoardWidth-2)
-        self.coordinates = [[x, y+i] for i in range(initial_size)]
-        self._direction = "down"
-        self.is_alive = True
+        self.init_coordinates(x, y)
+
+    def init_coordinates(self, x, y):
+        if self._direction == 'down':
+            self.coordinates = [[x, y+i] for i in range(self.size)]
+        elif self._direction == 'up':
+            self.coordinates = [[x, y-i] for i in range(self.size)]
+        elif self._direction == 'right':
+            self.coordinates = [[x+i, y] for i in range(self.size)]
+        elif self._direction == 'left':
+            self.coordinates = [[x-i, y] for i in range(self.size)]
 
     @property
     def score(self):
-        return self.size - 3
+        return self._score
 
     @property
     def direction(self):
@@ -139,6 +150,7 @@ class Snake(GameObject):
 
         if grow:
             self.size += 1
+            self._score += 1
         else:
             self.coordinates.pop(0)
         self.coordinates.append([x, y])
