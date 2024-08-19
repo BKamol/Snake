@@ -121,7 +121,7 @@ class Snake(GameObject):
             self._direction = 'up'
         elif new_direction == 'down' and self._direction != 'up':
             self._direction = 'down'
-        self.move()
+        # self.move()
 
     def move(self, grow=False):
         """
@@ -154,6 +154,7 @@ class Snake(GameObject):
             self._score += 1
         else:
             self.coordinates.pop(0)
+
         self.coordinates.append([x, y])
 
     def get_head_coords(self):

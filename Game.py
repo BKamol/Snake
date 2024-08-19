@@ -71,13 +71,16 @@ class Board(QGraphicsView):
         self.apple = Apple()
         self.obstacle = Obstacle()
         self.game_timer = QTimer()
+        self.turn_timer = QTimer()
         self.obstacle_timer = QTimer()
         self.paused = False
 
         self.game_timer.timeout.connect(self.update_game)
         self.obstacle_timer.timeout.connect(self.generate_obstacle)
+        self.turn_timer.timeout.connect(lambda: self.turn_timer.stop())
         self.game_timer.start(self.GameTimer)
         self.obstacle_timer.start(self.ObstacleTimer)
+        self.turn_timer.start(self.GameTimer)
         self.apple.add_random_item(avoid_object=self.snake)
         self.msg2statusbar.emit(f"Score: {self.snake.score}")
 
@@ -85,8 +88,8 @@ class Board(QGraphicsView):
         """
         Каждые GameTimer времени обновляет состояние игры
         """
-        self.draw_objects()
         self.snake.move()
+        self.draw_objects()
         self.check_collisions()
 
     def draw_objects(self):
@@ -138,17 +141,19 @@ class Board(QGraphicsView):
             return
         elif self.paused:
             return
-
-        if event.key() == Qt.Key_Up:
-            self.snake.direction = 'up'
-        elif event.key() == Qt.Key_Down:
-            self.snake.direction = 'down'
-        elif event.key() == Qt.Key_Left:
-            self.snake.direction = 'left'
-        elif event.key() == Qt.Key_Right:
-            self.snake.direction = 'right'
         elif event.key() == Qt.Key_R:
             self.restart()
+
+        if not self.turn_timer.isActive():
+            if event.key() == Qt.Key_Up:
+                self.snake.direction = 'up'
+            elif event.key() == Qt.Key_Down:
+                self.snake.direction = 'down'
+            elif event.key() == Qt.Key_Left:
+                self.snake.direction = 'left'
+            elif event.key() == Qt.Key_Right:
+                self.snake.direction = 'right'
+            self.turn_timer.start(self.GameTimer)
 
     def restart(self):
         """Рестарт игры"""
@@ -168,6 +173,7 @@ class Board(QGraphicsView):
             else:
                 self.game_timer.start(self.GameTimer)
                 self.obstacle_timer.start(self.ObstacleTimer)
+                self.msg2statusbar.emit(f"Score: {self.snake.score}")
 
     def resizeEvent(self, event):
         self.setSceneRect(0, 0, self.width(), self.height())
