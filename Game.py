@@ -125,7 +125,8 @@ class Board(QGraphicsView):
             self.snake.is_alive = False
 
         if self.snake.check_collision(self.apple, remove=True):
-            self.apple.add_random_item(avoid_object=self.snake)
+            self.apple.add_random_item(
+                avoid_object=self.snake.coordinates+self.obstacle.coordinates)
             self.snake.move(grow=True)
             self.msg2statusbar.emit(f"Score: {self.snake.score}")
 
@@ -133,7 +134,8 @@ class Board(QGraphicsView):
         """
         Добавляет клетку препятствия
         """
-        self.obstacle.add_random_item(avoid_object=self.snake)
+        self.obstacle.add_random_item(
+            avoid_object=self.snake.coordinates+self.apple.coordinates)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_P:
@@ -145,13 +147,13 @@ class Board(QGraphicsView):
             self.restart()
 
         if not self.turn_timer.isActive():
-            if event.key() == Qt.Key_Up:
+            if event.key() in (Qt.Key_Up, Qt.Key_W):
                 self.snake.direction = 'up'
-            elif event.key() == Qt.Key_Down:
+            elif event.key() in (Qt.Key_Down, Qt.Key_S):
                 self.snake.direction = 'down'
-            elif event.key() == Qt.Key_Left:
+            elif event.key() in (Qt.Key_Left, Qt.Key_A):
                 self.snake.direction = 'left'
-            elif event.key() == Qt.Key_Right:
+            elif event.key() in (Qt.Key_Right, Qt.Key_D):
                 self.snake.direction = 'right'
             self.turn_timer.start(self.GameTimer)
 
