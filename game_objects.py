@@ -121,6 +121,7 @@ class Snake(GameObject):
             self._direction = 'up'
         elif new_direction == 'down' and self._direction != 'up':
             self._direction = 'down'
+        self.move()
 
     def move(self, grow=False):
         """
